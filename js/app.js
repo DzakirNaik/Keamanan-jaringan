@@ -4,7 +4,7 @@ const mk=()=>({rules:[{id:1,name:"Web HTTPS",ip:"*",port:"443",act:"ALLOW",on:1}
 let S=mk(),ready=false,last="";const save=()=>{};
 async function flush(){if(!ready)return;const nl=S.logs.filter(l=>l.n),j=JSON.stringify({rules:S.rules,bl:S.bl,tot:S.tot,al:S.al,blk:S.blk,ports:S.ports,on:S.on,clr:!!S.clr,newLogs:nl});if(j===last)return;
  try{const r=await fetch("api.php?action=save",{method:"POST",headers:{"Content-Type":"application/json"},body:j});if(!(await r.json()).ok)throw 0;last=j;nl.forEach(l=>delete l.n);S.clr=false}catch(e){toast("Gagal menyimpan ke database")}}
-fetch("api.php?action=load").then(r=>r.json()).then(d=>{if(d.error)throw 0;S=Object.assign(mk(),d);S.nid=Math.max(0,...S.rules.map(r=>r.id))+1;ready=true;render()}).catch(()=>toast("Database tidak terhubung. Buka lewat http://localhost/cybershield/"));
+fetch("api.php?action=load").then(r=>r.json()).then(d=>{if(d.error)throw 0;S=Object.assign(mk(),d);S.nid=Math.max(0,...S.rules.map(r=>r.id))+1;ready=true;render()}).catch(()=>{/* Mode statis (mis. GitHub Pages): tidak ada database, pakai data contoh di atas. */});
 setInterval(flush,3000);
 const now=()=>new Date().toISOString().replace("T"," ").slice(0,19);
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
