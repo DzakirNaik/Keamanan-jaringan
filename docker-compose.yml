@@ -1,0 +1,36 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      DB_HOST: db
+      DB_NAME: cybershield
+      DB_USER: cybershield
+      DB_PASS: cybershield
+    volumes:
+      # Kode di laptop langsung terbaca container, jadi edit file tanpa rebuild.
+      - .:/var/www/html
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cybershield
+      MYSQL_USER: cybershield
+      MYSQL_PASSWORD: cybershield
+    volumes:
+      - mysql-data:/var/lib/mysql
+      # Database + data awal dibuat otomatis saat container pertama kali jalan.
+      - ./cybershield.sql:/docker-entrypoint-initdb.d/01-cybershield.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  mysql-data:
