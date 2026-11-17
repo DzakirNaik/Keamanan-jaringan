@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CyberShield – Firewall & Network Threat Prevention</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+ <div class="brand"><div class="logo">⛨</div><div><b>CyberShield <span class="chip cy mono">v4.2-ENT</span></b><small>Firewall Engine & Network Threat Prevention</small></div></div>
+ <div class="chips"><span class="chip">Firewall: <b id="fwSt" class="ok mono">AKTIF (ALLOW-LIST)</b></span><span class="chip">IDS/IPS Engine: <b class="cy mono">ONLINE</b></span><span class="chip">Tingkat Ancaman: <b id="thr" class="ok mono">RENDAH</b></span><span class="chip mono" id="clk">--:--:-- UTC</span></div>
+ <button class="pw" id="pw">⏻ Matikan Firewall</button>
+</header>
+<div class="layout">
+ <aside>
+  <nav id="nav" aria-label="Menu utama">
+   <button data-v="dash" class="on">▦ Dashboard</button>
+   <button data-v="rules">◍ Aturan Firewall <span class="badge" id="nRules">0</span></button>
+   <button data-v="sim">∿ Simulasi Traffic & Serangan</button>
+   <button data-v="logs">▤ Log Keamanan</button>
+   <button data-v="bl">⊘ Blacklist IP & Ancaman</button>
+  </nav>
+  <div class="card res mono"><div class="row"><span>Beban CPU</span><span class="cy" id="cpuT">18%</span></div><div class="bar"><i id="cpuB" style="width:18%"></i></div><div class="row"><span>Penggunaan Memori</span><span class="cy" id="memT">42%</span></div><div class="bar"><i id="memB" style="width:42%"></i></div><div class="row"><span>Bandwidth In/Out</span><span class="cy" id="bw">1.4 MB/s</span></div></div>
+ </aside>
+ <main>
+  <section class="view on" id="v-dash">
+   <div class="stats">
+    <div class="card stat"><small>Total Paket Diinspeksi</small><div class="v" id="sTot">0</div><small class="ok" id="sRate">&nbsp;</small></div>
+    <div class="card stat"><small>Koneksi Diizinkan</small><div class="v ok" id="sAl">0</div><small>Tingkat Kelulusan: <b class="ok" id="sPct">0%</b></small></div>
+    <div class="card stat"><small>Ancaman Diblokir</small><div class="v bad" id="sBl">0</div><small class="bad">⚠ Filter Malicious Active</small></div>
+    <div class="card stat"><small>Aturan Firewall Aktif</small><div class="v cy" id="sRu">0</div><small id="sRuD"></small></div>
+   </div>
+   <div class="grid2">
+    <div class="card"><h3>Volume Traffic Waktu Nyata</h3><p class="s">Koneksi Diizinkan <b class="ok">●</b> vs Paket Diblokir <b class="bad">●</b> (Paket/detik)</p><canvas id="cv" width="700" height="230"></canvas></div>
+    <div class="card"><h3>Port Paling Sering Diblokir</h3><p class="s">Distribusi percobaan serangan berdasarkan port target</p><div id="topPorts"></div></div>
+   </div>
+   <div class="card"><div class="row"><h3>Peringatan Keamanan Terkini</h3><button data-go="logs" class="cy" style="border:0;background:none">Lihat Semua Log →</button></div>
+    <div class="tbl"><table><thead><tr><th>Waktu</th><th>IP Asal</th><th>Port Target</th><th>Deskripsi Serangan</th><th>Tindakan</th></tr></thead><tbody id="recent"></tbody></table></div></div>
+  </section>
+
+  <section class="view" id="v-rules"><div class="card"><h3>Manajemen Aturan Firewall</h3><p class="s">Aturan dievaluasi dari atas ke bawah. Jika tidak ada aturan cocok, koneksi diblokir (default deny).</p>
+   <form class="inline" id="fRule"><input name="name" placeholder="Nama aturan" required><input name="ip" placeholder="IP / CIDR atau *" required value="*"><input name="port" placeholder="Port atau *" required value="*"><select name="act"><option value="ALLOW">Izinkan</option><option value="BLOCK">Blokir</option></select><button class="btn-p">+ Tambah Aturan</button></form>
+   <div class="tbl"><table><thead><tr><th>Aktif</th><th>Nama</th><th>IP</th><th>Port</th><th>Aksi</th><th></th></tr></thead><tbody id="tRules"></tbody></table></div></div></section>
+
+  <section class="view" id="v-sim"><div class="sim">
+   <div class="card"><h3>Simulasi Traffic & Serangan</h3><p class="s">Setiap paket diperiksa terhadap blacklist, lalu aturan firewall.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><button class="btn-p" id="bTraf">▶ Mulai Traffic Normal</button><button class="btn-d" id="bAtk">⚡ Jalankan Serangan</button><button id="bOne">Kirim 1 Paket</button></div>
+    <form class="inline" id="fPkt"><input name="ip" placeholder="IP sumber" required value="192.168.1.20"><input name="port" placeholder="Port" required value="443"><button>Uji Koneksi</button></form>
+    <div id="pktRes" class="mono" style="font-size:13px;min-height:40px">Hasil uji koneksi muncul di sini.</div></div>
+   <div class="card"><h3>Status Koneksi</h3><p class="s">Aliran langsung</p><div class="feed mono" id="feed"></div></div></div></section>
+
+  <section class="view" id="v-logs"><div class="card"><div class="row"><h3>Log Keamanan</h3><div><button id="expLog">Ekspor CSV</button> <button class="btn-d" id="clrLog">Hapus Log</button></div></div><p class="s">Mencatat waktu, IP sumber, port tujuan, jenis aktivitas, dan tindakan sistem (500 entri terakhir).</p>
+   <div class="tbl"><table><thead><tr><th>Waktu</th><th>IP Sumber</th><th>Port Tujuan</th><th>Jenis Aktivitas</th><th>Tindakan</th></tr></thead><tbody id="tLogs"></tbody></table></div></div></section>
+
+  <section class="view" id="v-bl"><div class="card"><h3>Blacklist IP & Ancaman</h3><p class="s">IP di daftar ini selalu diblokir, mengabaikan aturan lain.</p>
+   <form class="inline" id="fBl"><input name="ip" placeholder="Alamat IP" required><input name="why" placeholder="Alasan" style="min-width:220px"><button class="btn-p">+ Tambah ke Blacklist</button></form>
+   <div class="tbl"><table><thead><tr><th>IP</th><th>Alasan</th><th>Ditambahkan</th><th></th></tr></thead><tbody id="tBl"></tbody></table></div></div></section>
+ </main>
+</div>
+<div class="toast" id="toast"></div>
+<script src="js/app.js"></script>
+</body>
+</html>
