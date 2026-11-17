@@ -6,6 +6,19 @@ Dibuat oleh **Muhammad Irfan Dzakir** (NIM 242502040003), Kelas 3TI01.
 
 Stack: PHP 8 + MySQL + HTML/CSS/JS. Tidak ada proses build.
 
+## Buka langsung di browser (tanpa install apa pun)
+
+Kalau GitHub Pages diaktifkan untuk repo ini (Settings → Pages → Branch
+`main`), dashboard bisa dibuka langsung lewat link — tanpa install Docker
+atau XAMPP:
+
+**https://dzakirnaik.github.io/Keamanan-jaringan/**
+
+Mode ini berjalan dengan data contoh bawaan (mode demo): semua menu
+berfungsi, tapi perubahan tidak tersimpan — begitu halaman di-refresh,
+data kembali ke contoh awal. Untuk menyimpan data, jalankan lewat Docker
+atau XAMPP di bawah.
+
 ## Cara 1 — Docker (paling gampang, buat laptop/PC lain)
 
 Syarat: [Docker Desktop](https://www.docker.com/products/docker-desktop/)
